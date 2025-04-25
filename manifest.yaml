@@ -1,0 +1,50 @@
+version: 0.0.1
+type: plugin
+author: sakura4036
+name: semantic_scholar
+label:
+  en_US: semantic_scholar
+  ja_JP: semantic_scholar
+  zh_Hans: semantic_scholar
+  pt_BR: semantic_scholar
+description:
+  en_US: API tools for semantic scholar apis
+  ja_JP: API tools for semantic scholar apis
+  zh_Hans: API tools for semantic scholar apis
+  pt_BR: API tools for semantic scholar apis
+icon: icon.svg
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    model:
+      enabled: true
+      llm: true
+      text_embedding: false
+      rerank: false
+      tts: false
+      speech2text: false
+      moderation: false
+    endpoint:
+      enabled: true
+    app:
+      enabled: true
+    storage:
+      enabled: true
+      size: 1048576
+plugins:
+  tools:
+    - provider/semantic_scholar.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+created_at: 2025-04-25T16:53:29.3377172+08:00
+privacy: PRIVACY.md
+verified: false

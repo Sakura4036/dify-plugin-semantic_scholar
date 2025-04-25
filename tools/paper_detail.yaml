@@ -1,0 +1,44 @@
+identity:
+  name: paper_detail
+  author: sakura4036
+  label:
+    en_US: Paper Detail
+    zh_Hans: 论文详情
+    pt_BR: Detalhes do Artigo
+description:
+  human:
+    en_US: Get detailed information about a specific academic paper
+    zh_Hans: 获取特定学术论文的详细信息
+    pt_BR: Obtenha informações detalhadas sobre um artigo acadêmico específico
+  llm: Retrieves detailed information about a specific academic paper using the Semantic Scholar API. Returns comprehensive metadata including citations and references if requested.
+parameters:
+  - name: paper_id
+    type: string
+    required: true
+    label:
+      en_US: Paper ID
+      zh_Hans: 论文ID
+      pt_BR: ID do Artigo
+    human_description:
+      en_US: Semantic Scholar Paper ID, DOI, arXiv ID, MAG ID, ACL ID, PubMed ID, or Corpus ID
+      zh_Hans: Semantic Scholar论文ID、DOI、arXiv ID、MAG ID、ACL ID、PubMed ID或Corpus ID
+      pt_BR: ID do Semantic Scholar, DOI, ID do arXiv, ID do MAG, ID do ACL, ID do PubMed ou ID do Corpus
+    llm_description: The identifier for the paper. Can be a Semantic Scholar Paper ID, DOI, arXiv ID, MAG ID, ACL ID, PubMed ID, or Corpus ID.
+    form: llm
+  - name: fields
+    type: string
+    required: false
+    default: "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount,references,citations"
+    label:
+      en_US: Fields
+      zh_Hans: 字段
+      pt_BR: Campos
+    human_description:
+      en_US: Comma-separated list of fields to include in the response
+      zh_Hans: 响应中包含的字段，以逗号分隔
+      pt_BR: Lista de campos separados por vírgula para incluir na resposta
+    llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount, references, citations, and more.
+    form: form
+extra:
+  python:
+    source: tools/paper_detail.py 

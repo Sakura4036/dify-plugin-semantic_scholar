@@ -1,0 +1,44 @@
+identity:
+  name: multiple_papers_detail
+  author: sakura4036
+  label:
+    en_US: Multiple Papers Detail
+    zh_Hans: 多篇论文详情
+    pt_BR: Detalhes de Múltiplos Artigos
+description:
+  human:
+    en_US: Get detailed information about multiple academic papers at once
+    zh_Hans: 一次获取多篇学术论文的详细信息
+    pt_BR: Obtenha informações detalhadas sobre vários artigos acadêmicos de uma vez
+  llm: Retrieves detailed information about multiple academic papers in a single request. Useful for batch-processing paper metadata from Semantic Scholar.
+parameters:
+  - name: paper_ids
+    type: string
+    required: true
+    label:
+      en_US: Paper IDs
+      zh_Hans: 论文ID列表
+      pt_BR: IDs dos Artigos
+    human_description:
+      en_US: List of paper identifiers (as JSON array or comma-separated values)
+      zh_Hans: 论文标识符列表（JSON数组或逗号分隔的值）
+      pt_BR: Lista de identificadores de artigos (como array JSON ou valores separados por vírgula)
+    llm_description: A list of paper identifiers. Can be provided as a JSON array of strings or as comma-separated values. Identifiers can be Semantic Scholar Paper IDs, DOIs, arXiv IDs, etc.
+    form: llm
+  - name: fields
+    type: string
+    required: false
+    default: "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount"
+    label:
+      en_US: Fields
+      zh_Hans: 字段
+      pt_BR: Campos
+    human_description:
+      en_US: Comma-separated list of fields to include in the response
+      zh_Hans: 响应中包含的字段，以逗号分隔
+      pt_BR: Lista de campos separados por vírgula para incluir na resposta
+    llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount and more.
+    form: form
+extra:
+  python:
+    source: tools/multiple_papers_detail.py 

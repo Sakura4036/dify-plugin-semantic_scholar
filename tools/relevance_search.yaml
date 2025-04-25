@@ -1,0 +1,140 @@
+identity:
+  name: relevance_search
+  author: sakura4036
+  label:
+    en_US: Relevance Search
+    zh_Hans: 相关性搜索
+    pt_BR: Pesquisa por Relevância
+description:
+  human:
+    en_US: Search for academic papers based on relevance to a query
+    zh_Hans: 根据查询内容的相关性搜索学术论文
+    pt_BR: Pesquise artigos acadêmicos com base na relevância para uma consulta
+  llm: Search for academic papers that are relevant to a given query string using Semantic Scholar API. Returns papers ranked by relevance.
+parameters:
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query
+      zh_Hans: 查询
+      pt_BR: Consulta
+    human_description:
+      en_US: The text to search for relevant papers
+      zh_Hans: 用于搜索相关论文的文本
+      pt_BR: O texto para pesquisar artigos relevantes
+    llm_description: The search query for finding papers. Can be a topic, title, or any relevant search term.
+    form: llm
+  - name: max_num_results
+    type: number
+    required: false
+    default: 100
+    min: 1
+    max: 1000
+    label:
+      en_US: Maximum Results
+      zh_Hans: 最大结果数
+      pt_BR: Resultados Máximos
+    human_description:
+      en_US: Maximum number of results to return (1-1000)
+      zh_Hans: 返回结果的最大数量（1-1000）
+      pt_BR: Número máximo de resultados a retornar (1-1000)
+    llm_description: Maximum number of papers to return in the results, between 1 and 1000. Multiple API calls will be made if necessary.
+    form: form
+  - name: fields
+    type: string
+    required: false
+    default: "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount"
+    label:
+      en_US: Fields
+      zh_Hans: 字段
+      pt_BR: Campos
+    human_description:
+      en_US: Comma-separated list of fields to include in the response
+      zh_Hans: 响应中包含的字段，以逗号分隔
+      pt_BR: Lista de campos separados por vírgula para incluir na resposta
+    llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount and more.
+    form: form
+  - name: publicationTypes
+    type: string
+    required: false
+    label:
+      en_US: Publication Types
+      zh_Hans: 出版物类型
+      pt_BR: Tipos de Publicação
+    human_description:
+      en_US: Filter results by publication type, comma-separated (e.g., "JournalArticle,Conference")
+      zh_Hans: 按出版物类型过滤结果，逗号分隔（例如："JournalArticle,Conference"）
+      pt_BR: Filtrar resultados por tipo de publicação, separados por vírgula (ex: "JournalArticle,Conference")
+    llm_description: Filter papers by publication type. Values can include JournalArticle, Conference, Review, and others. Provide as comma-separated list.
+    form: form
+  - name: openAccessPdf
+    type: boolean
+    required: false
+    label:
+      en_US: Open Access PDF Only
+      zh_Hans: 仅开放获取PDF
+      pt_BR: Apenas PDF de Acesso Aberto
+    human_description:
+      en_US: Only return papers with open access PDFs
+      zh_Hans: 仅返回具有开放获取PDF的论文
+      pt_BR: Retornar apenas artigos com PDFs de acesso aberto
+    llm_description: When set to true, only papers with freely available PDFs will be returned.
+    form: form
+  - name: minCitationCount
+    type: number
+    required: false
+    min: 0
+    label:
+      en_US: Minimum Citation Count
+      zh_Hans: 最小引用次数
+      pt_BR: Contagem Mínima de Citações
+    human_description:
+      en_US: Only return papers with at least this many citations
+      zh_Hans: 仅返回至少有这么多引用的论文
+      pt_BR: Retornar apenas artigos com pelo menos este número de citações
+    llm_description: Filter to only include papers with at least this many citations. Useful for finding influential papers.
+    form: form
+  - name: year
+    type: string
+    required: false
+    label:
+      en_US: Publication Year
+      zh_Hans: 出版年份
+      pt_BR: Ano de Publicação
+    human_description:
+      en_US: Filter by publication year (single year or range, e.g., "2020" or "2018-2022")
+      zh_Hans: 按出版年份过滤（单一年份或范围，例如："2020"或"2018-2022"）
+      pt_BR: Filtrar por ano de publicação (ano único ou intervalo, ex: "2020" ou "2018-2022")
+    llm_description: Filter papers by publication year. Can be a single year (e.g., "2020") or a range (e.g., "2018-2022").
+    form: form
+  - name: fieldsOfStudy
+    type: string
+    required: false
+    label:
+      en_US: Fields of Study
+      zh_Hans: 研究领域
+      pt_BR: Campos de Estudo
+    human_description:
+      en_US: Filter by academic fields, comma-separated (e.g., "Computer Science,Medicine")
+      zh_Hans: 按学术领域过滤，逗号分隔（例如："Computer Science,Medicine"）
+      pt_BR: Filtrar por campos acadêmicos, separados por vírgula (ex: "Computer Science,Medicine")
+    llm_description: Filter papers by academic discipline. Values include Computer Science, Medicine, Physics, etc. Provide as comma-separated list.
+    form: form
+  - name: filtered
+    type: boolean
+    required: false
+    default: true
+    label:
+      en_US: Filter Papers Without Abstract
+      zh_Hans: 过滤无摘要论文
+      pt_BR: Filtrar Artigos Sem Resumo
+    human_description:
+      en_US: Whether to filter out papers that don't have an abstract
+      zh_Hans: 是否过滤掉没有摘要的论文
+      pt_BR: Se deve filtrar artigos que não possuem resumo
+    llm_description: When true, papers without abstracts will be excluded from results. Set to false to include all papers regardless of abstract availability.
+    form: form
+extra:
+  python:
+    source: tools/relevance_search.py 

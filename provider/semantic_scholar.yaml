@@ -1,0 +1,33 @@
+identity:
+  author: sakura4036
+  name: semantic_scholar
+  label:
+    en_US: Semantic Scholar
+    zh_Hans: Semantic Scholar
+    pt_BR: Semantic Scholar
+  description:
+    en_US: Academic paper search and retrieval tools using Semantic Scholar API
+    zh_Hans: 使用Semantic Scholar API的学术论文搜索和检索工具
+    pt_BR: Ferramentas de busca e recuperação de artigos acadêmicos usando a API Semantic Scholar
+  icon: icon.svg
+credentials_schema:
+  api_key:
+    type: secret-input
+    required: false
+    label:
+      en_US: API Key
+      zh_Hans: API密钥
+      pt_BR: Chave API
+    placeholder:
+      en_US: Optional, increases rate limits
+      zh_Hans: 可选，增加请求速率限制
+      pt_BR: Opcional, aumenta os limites de taxa
+tools:
+  - tools/relevance_search.yaml
+  - tools/bulk_search.yaml
+  - tools/paper_detail.yaml
+  - tools/multiple_papers_detail.yaml
+  - tools/title_search.yaml
+extra:
+  python:
+    source: provider/semantic_scholar.py

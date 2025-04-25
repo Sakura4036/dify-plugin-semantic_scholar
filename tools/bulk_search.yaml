@@ -1,0 +1,72 @@
+identity:
+  name: bulk_search
+  author: sakura4036
+  label:
+    en_US: Bulk Search
+    zh_Hans: 批量搜索
+    pt_BR: Pesquisa em Massa
+description:
+  human:
+    en_US: Search for multiple queries at once using Semantic Scholar. Supports AND, OR, NOT operators.
+    zh_Hans: 使用Semantic Scholar一次搜索多个查询。支持AND、OR、NOT运算符。
+    pt_BR: Pesquise várias consultas de uma vez usando Semantic Scholar. Suporta operadores AND, OR, NOT.
+  llm: Performs multiple paper searches at once using Semantic Scholar API. Useful for searching several topics in a single request. Supports boolean operators (AND, OR, NOT) in queries.
+parameters:
+  - name: queries
+    type: string
+    required: true
+    label:
+      en_US: Queries
+      zh_Hans: 查询列表
+      pt_BR: Consultas
+    human_description:
+      en_US: List of search terms (as JSON array or comma-separated values). Supports AND, OR, NOT operators.
+      zh_Hans: 搜索词列表（JSON数组或逗号分隔的值）。支持AND、OR、NOT运算符。
+      pt_BR: Lista de termos de pesquisa (como array JSON ou valores separados por vírgula). Suporta operadores AND, OR, NOT.
+    llm_description: A list of search queries. Can be provided as a JSON array of strings or as comma-separated values. Supports boolean operators (AND, OR, NOT).
+    form: llm
+  - name: fields
+    type: string
+    required: false
+    default: "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount"
+    label:
+      en_US: Fields
+      zh_Hans: 字段
+      pt_BR: Campos
+    human_description:
+      en_US: Comma-separated list of fields to include in the response
+      zh_Hans: 响应中包含的字段，以逗号分隔
+      pt_BR: Lista de campos separados por vírgula para incluir na resposta
+    llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount and more.
+    form: form
+  - name: max_num_results
+    type: number
+    required: false
+    default: 100
+    label:
+      en_US: Maximum Results
+      zh_Hans: 最大结果数
+      pt_BR: Resultados Máximos
+    human_description:
+      en_US: Maximum number of results to return per query (up to 1000)
+      zh_Hans: 每个查询返回的最大结果数（最多1000）
+      pt_BR: Número máximo de resultados a retornar por consulta (até 1000)
+    llm_description: Maximum number of results to return per query. Default is 100. Maximum allowed is 1000.
+    form: form
+  - name: filtered
+    type: boolean
+    required: false
+    default: true
+    label:
+      en_US: Filter Results
+      zh_Hans: 过滤结果
+      pt_BR: Filtrar Resultados
+    human_description:
+      en_US: Filter out papers without abstracts
+      zh_Hans: 过滤没有摘要的论文
+      pt_BR: Filtrar artigos sem resumos
+    llm_description: When true, filters out papers without abstracts. Default is true.
+    form: form
+extra:
+  python:
+    source: tools/bulk_search.py 

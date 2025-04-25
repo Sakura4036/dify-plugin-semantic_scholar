@@ -1,0 +1,57 @@
+identity:
+  name: title_search
+  author: sakura4036
+  label:
+    en_US: Title Search
+    zh_Hans: 标题搜索
+    pt_BR: Pesquisa por Título
+description:
+  human:
+    en_US: Search for academic papers by title
+    zh_Hans: 按标题搜索学术论文
+    pt_BR: Pesquise artigos acadêmicos por título
+  llm: Searches for academic papers by title using the Semantic Scholar API. Returns papers that match the given title.
+parameters:
+  - name: title
+    type: string
+    required: true
+    label:
+      en_US: Title
+      zh_Hans: 标题
+      pt_BR: Título
+    human_description:
+      en_US: The title of the paper to search for
+      zh_Hans: 要搜索的论文标题
+      pt_BR: O título do artigo a ser pesquisado
+    llm_description: The title or partial title of the paper to search for.
+    form: llm
+  - name: year
+    type: number
+    required: false
+    label:
+      en_US: Year
+      zh_Hans: 年份
+      pt_BR: Ano
+    human_description:
+      en_US: Publication year (optional)
+      zh_Hans: 出版年份（可选）
+      pt_BR: Ano de publicação (opcional)
+    llm_description: The publication year to filter results by. Optional.
+    form: llm
+  - name: fields
+    type: string
+    required: false
+    default: "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount"
+    label:
+      en_US: Fields
+      zh_Hans: 字段
+      pt_BR: Campos
+    human_description:
+      en_US: Comma-separated list of fields to include in the response
+      zh_Hans: 响应中包含的字段，以逗号分隔
+      pt_BR: Lista de campos separados por vírgula para incluir na resposta
+    llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount and more.
+    form: form
+extra:
+  python:
+    source: tools/title_search.py 
