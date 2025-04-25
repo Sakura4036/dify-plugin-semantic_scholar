@@ -7,23 +7,23 @@ identity:
     pt_BR: Pesquisa em Massa
 description:
   human:
-    en_US: Search for multiple queries at once using Semantic Scholar. Supports AND, OR, NOT operators.
-    zh_Hans: 使用Semantic Scholar一次搜索多个查询。支持AND、OR、NOT运算符。
-    pt_BR: Pesquise várias consultas de uma vez usando Semantic Scholar. Suporta operadores AND, OR, NOT.
-  llm: Performs multiple paper searches at once using Semantic Scholar API. Useful for searching several topics in a single request. Supports boolean operators (AND, OR, NOT) in queries.
+    en_US: Search for large volumes of papers using Semantic Scholar. Supports AND, OR, NOT operators.
+    zh_Hans: 使用Semantic Scholar搜索大量论文。支持AND、OR、NOT运算符。
+    pt_BR: Pesquise grandes volumes de artigos usando Semantic Scholar. Suporta operadores AND, OR, NOT.
+  llm: Performs bulk search for papers using Semantic Scholar API. Returns up to 10,000 results. Supports boolean operators (AND, OR, NOT) in queries.
 parameters:
-  - name: queries
+  - name: query
     type: string
     required: true
     label:
-      en_US: Queries
-      zh_Hans: 查询列表
-      pt_BR: Consultas
+      en_US: Query
+      zh_Hans: 查询
+      pt_BR: Consulta
     human_description:
-      en_US: List of search terms (as JSON array or comma-separated values). Supports AND, OR, NOT operators.
-      zh_Hans: 搜索词列表（JSON数组或逗号分隔的值）。支持AND、OR、NOT运算符。
-      pt_BR: Lista de termos de pesquisa (como array JSON ou valores separados por vírgula). Suporta operadores AND, OR, NOT.
-    llm_description: A list of search queries. Can be provided as a JSON array of strings or as comma-separated values. Supports boolean operators (AND, OR, NOT).
+      en_US: Search query with optional boolean operators (AND, OR, NOT)
+      zh_Hans: 搜索查询，可以使用布尔运算符（AND、OR、NOT）
+      pt_BR: Consulta de pesquisa com operadores booleanos opcionais (AND, OR, NOT)
+    llm_description: A search query string. Supports boolean operators (AND, OR, NOT).
     form: llm
   - name: fields
     type: string
@@ -42,16 +42,16 @@ parameters:
   - name: max_num_results
     type: number
     required: false
-    default: 100
+    default: 10
     label:
       en_US: Maximum Results
       zh_Hans: 最大结果数
       pt_BR: Resultados Máximos
     human_description:
-      en_US: Maximum number of results to return per query (up to 1000)
-      zh_Hans: 每个查询返回的最大结果数（最多1000）
-      pt_BR: Número máximo de resultados a retornar por consulta (até 1000)
-    llm_description: Maximum number of results to return per query. Default is 100. Maximum allowed is 1000.
+      en_US: Maximum number of results to return
+      zh_Hans: 返回的最大结果数
+      pt_BR: Número máximo de resultados a retornar
+    llm_description: Maximum number of results to return. Default is 10.
     form: form
   - name: filtered
     type: boolean

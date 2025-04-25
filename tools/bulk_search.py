@@ -11,9 +11,9 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 class BulkSearchTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         # Get parameters
-        queries = tool_parameters.get("queries", [])
+        query = tool_parameters.get("query", "")
         fields = tool_parameters.get("fields", "title,authors,abstract,year,externalIds,url,referenceCount,citationCount,influentialCitationCount")
-        max_num_results = min(int(tool_parameters.get("max_num_results", 100)), 1000)  # Default 100, max 1000
+        max_num_results = min(int(tool_parameters.get("max_num_results", 10)), 10000)  # Default 10, max 10000
         filtered = tool_parameters.get("filtered", True)  # Filter out papers without abstract
         
         # Define grammar switch for query syntax
@@ -23,120 +23,88 @@ class BulkSearchTool(Tool):
             "NOT": '-',
         }
         
-        # Handle different input formats
-        if isinstance(queries, str):
-            try:
-                # Try to parse as JSON if it's a string
-                queries = json.loads(queries)
-            except json.JSONDecodeError:
-                # If not valid JSON, split by comma as a fallback
-                queries = [q.strip() for q in queries.split(",")]
-        
-        # Validate queries
-        if not queries or not isinstance(queries, list):
-            yield self.create_text_message("错误：'queries'必须是非空的搜索词列表")
-            return
-        
-        # Process query syntax for each query
-        processed_queries = []
-        for query in queries:
-            # Apply grammar transformations
+        # Process query syntax
+        if query:
             for operator, symbol in switch_grammar.items():
                 # Replace operator with symbol, ensuring word boundaries
                 pattern = r'\b' + re.escape(operator) + r'\b'
                 query = re.sub(pattern, symbol, query)
-            processed_queries.append(query)
         
         # Set API endpoint
-        url = "https://api.semanticscholar.org/graph/v1/paper/batch/search"
-        
-        # Maximum results per API call
-        max_results_per_query = 100
+        url = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
         
         try:
             # Prepare results container
-            all_results = []
+            all_papers = []
+            continuation_token = None
+            batch_count = 0
+            total = 0
             
-            # Process queries in batches to avoid overloading the API
-            for i in range(0, len(processed_queries), 10):  # Process 10 queries at a time
-                batch_queries = processed_queries[i:i+10]
+            # Keep fetching until we have enough results or no more are available
+            while len(all_papers) < max_num_results and (batch_count == 0 or continuation_token):
+                # Add delay between requests to avoid rate limiting
+                if batch_count > 0:
+                    time.sleep(1)
                 
-                # Prepare request payload for first batch
+                # Prepare request payload
                 data = {
-                    "queries": batch_queries,
+                    "query": query,
                     "fields": fields,
-                    "offset": 0,
-                    "limit": min(max_results_per_query, max_num_results)
+                    "limit": min(1000, max_num_results - len(all_papers))
                 }
                 
-                # Make first API request for this batch
-                batch_results = self._query_batch(url, data, filtered)
+                # Add continuation token if available
+                if continuation_token:
+                    data["token"] = continuation_token
                 
-                # For each query that has more results, paginate if needed
-                for query_idx, query_result in enumerate(batch_results):
-                    total = query_result.get('total', 0)
-                    query_data = query_result.get('data', [])
-                    
-                    # Calculate how many more results we need
-                    remaining_results = min(max_num_results, total) - len(query_data)
-                    offset = len(query_data)
-                    
-                    # Continue fetching if needed
-                    while remaining_results > 0 and offset < max_num_results:
-                        # Add delay to avoid rate limiting
-                        time.sleep(1)
-                        
-                        batch_size = min(remaining_results, max_results_per_query)
-                        
-                        # Prepare request for next page
-                        next_data = {
-                            "queries": [batch_queries[query_idx]],  # Just the single query
-                            "fields": fields,
-                            "offset": offset,
-                            "limit": batch_size
-                        }
-                        
-                        # Request next page
-                        next_results = self._query_batch(url, next_data, filtered)
-                        if not next_results or not next_results[0].get('data'):
-                            break
-                            
-                        # Add new results
-                        new_data = next_results[0].get('data', [])
-                        query_result['data'].extend(new_data)
-                        
-                        # Update counters
-                        offset += len(new_data)
-                        remaining_results -= len(new_data)
-                    
-                    # Update total to reflect actual number of results retrieved
-                    query_result['total'] = min(total, max_num_results)
+                # Make API request
+                response = self._query_batch(url, data)
                 
-                # Add this batch's results to the overall results
-                all_results.extend(batch_results)
+                if not response:
+                    break
                 
-                # Add delay between batches to avoid rate limiting
-                if i + 10 < len(processed_queries):
-                    time.sleep(2)
+                # Extract data from response
+                batch_total = response.get("total", 0)
+                if batch_count == 0:
+                    total = batch_total
+                
+                batch_papers = response.get("data", [])
+                continuation_token = response.get("token")
+                
+                # Filter results if needed
+                if filtered and 'abstract' in fields:
+                    batch_papers = [paper for paper in batch_papers if paper and paper.get('abstract', None) is not None]
+                
+                # Add to results
+                all_papers.extend(batch_papers)
+                batch_count += 1
+                
+                # Break if no continuation token or we've reached the limit
+                if not continuation_token or len(all_papers) >= max_num_results:
+                    break
             
-            # Return the aggregated results
-            yield self.create_json_message(all_results)
+            # Format the final result with actual number of results retrieved
+            final_result = {
+                "total": min(total, max_num_results),
+                "data": all_papers[:max_num_results]
+            }
+            
+            yield self.create_json_message(final_result)
             
         except Exception as e:
             # Return error message
             yield self.create_text_message(f"批量搜索出错：{str(e)}")
     
-    def _query_batch(self, url: str, data: dict, filtered: bool = True) -> list:
+    def _query_batch(self, url: str, data: dict) -> dict:
         """
-        Execute a batch query to the Semantic Scholar API
+        Execute a bulk search query to the Semantic Scholar API
         
         Args:
             url: API endpoint URL
             data: Request payload
-            filtered: Whether to filter results
             
         Returns:
-            list: Search results for each query
+            dict: Search results including papers and continuation token
         """
         # Prepare headers
         headers = {
@@ -151,27 +119,6 @@ class BulkSearchTool(Tool):
         response.raise_for_status()
         
         if response.status_code != 200:
-            return []
+            return {}
             
-        response_data = response.json()
-        
-        # Filter results if needed
-        if filtered:
-            for query_result in response_data:
-                if 'data' in query_result and query_result['data']:
-                    fields_list = data.get('fields', '').split(',')
-                    filtered_data = []
-                    
-                    for paper in query_result['data']:
-                        if not paper:
-                            continue
-                            
-                        # Skip papers without abstract if filtering is enabled
-                        if 'abstract' in fields_list and paper.get('abstract', None) is None:
-                            continue
-                            
-                        filtered_data.append(paper)
-                        
-                    query_result['data'] = filtered_data
-        
-        return response_data 
+        return response.json() 

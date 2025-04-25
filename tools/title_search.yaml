@@ -2,28 +2,28 @@ identity:
   name: title_search
   author: sakura4036
   label:
-    en_US: Title Search
-    zh_Hans: 标题搜索
-    pt_BR: Pesquisa por Título
+    en_US: Title Match Search
+    zh_Hans: 标题精确匹配搜索
+    pt_BR: Pesquisa por Correspondência de Título
 description:
   human:
-    en_US: Search for academic papers by title
-    zh_Hans: 按标题搜索学术论文
-    pt_BR: Pesquise artigos acadêmicos por título
-  llm: Searches for academic papers by title using the Semantic Scholar API. Returns papers that match the given title.
+    en_US: Find the academic paper that best matches a given title
+    zh_Hans: 查找与给定标题最匹配的学术论文
+    pt_BR: Encontre o artigo acadêmico que melhor corresponde a um título fornecido
+  llm: Searches for the single academic paper that best matches a given title using the Semantic Scholar API. Returns only the highest match result or a 404 error if no match is found.
 parameters:
-  - name: title
+  - name: query
     type: string
     required: true
     label:
-      en_US: Title
-      zh_Hans: 标题
-      pt_BR: Título
+      en_US: Query
+      zh_Hans: 查询
+      pt_BR: Consulta
     human_description:
       en_US: The title of the paper to search for
       zh_Hans: 要搜索的论文标题
       pt_BR: O título do artigo a ser pesquisado
-    llm_description: The title or partial title of the paper to search for.
+    llm_description: The title of the paper to search for. This should be as close as possible to the actual paper title.
     form: llm
   - name: year
     type: number
@@ -51,6 +51,58 @@ parameters:
       zh_Hans: 响应中包含的字段，以逗号分隔
       pt_BR: Lista de campos separados por vírgula para incluir na resposta
     llm_description: Comma-separated list of fields to include in the response. Available fields include title, authors, abstract, year, externalIds, url, referenceCount, citationCount, influentialCitationCount and more.
+    form: form
+  - name: publicationTypes
+    type: string
+    required: false
+    label:
+      en_US: Publication Types
+      zh_Hans: 出版类型
+      pt_BR: Tipos de Publicação
+    human_description:
+      en_US: Filter by publication types (comma-separated)
+      zh_Hans: 按出版类型筛选（逗号分隔）
+      pt_BR: Filtrar por tipos de publicação (separados por vírgula)
+    llm_description: Filter by publication types. Comma-separated list of types (e.g., "JournalArticle,Conference").
+    form: form
+  - name: openAccessPdf
+    type: boolean
+    required: false
+    label:
+      en_US: Open Access PDF
+      zh_Hans: 开放获取PDF
+      pt_BR: PDF de Acesso Aberto
+    human_description:
+      en_US: Filter for papers with open access PDFs
+      zh_Hans: 筛选具有开放访问PDF的论文
+      pt_BR: Filtrar artigos com PDFs de acesso aberto
+    llm_description: Filter for papers that have open access PDFs available.
+    form: form
+  - name: minCitationCount
+    type: number
+    required: false
+    label:
+      en_US: Minimum Citation Count
+      zh_Hans: 最小引用计数
+      pt_BR: Contagem Mínima de Citações
+    human_description:
+      en_US: Minimum number of citations
+      zh_Hans: 最少引用数量
+      pt_BR: Número mínimo de citações
+    llm_description: Filter for papers with at least this many citations.
+    form: form
+  - name: fieldsOfStudy
+    type: string
+    required: false
+    label:
+      en_US: Fields of Study
+      zh_Hans: 研究领域
+      pt_BR: Campos de Estudo
+    human_description:
+      en_US: Filter by fields of study (comma-separated)
+      zh_Hans: 按研究领域筛选（逗号分隔）
+      pt_BR: Filtrar por campos de estudo (separados por vírgula)
+    llm_description: Filter by fields of study. Comma-separated list of fields (e.g., "Computer Science,Medicine").
     form: form
 extra:
   python:
