@@ -126,11 +126,13 @@ class RelevanceSearchTool(Tool):
             params["openAccessPdf"] = open_access_pdf
         if min_citation_count is not None:
             params["minCitationCount"] = min_citation_count
-        if year is not None:
+        if year:
             params["year"] = year
         if fields_of_study:
             params["fieldsOfStudy"] = fields_of_study
-            
+
+        print(f"Querying: {params}")
+
         # Add API key if available
         headers = {}
         if hasattr(self, 'runtime') and hasattr(self.runtime, 'credentials'):

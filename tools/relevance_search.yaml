@@ -64,8 +64,8 @@ parameters:
       pt_BR: Tipos de Publicação
     human_description:
       en_US: Filter results by publication type, comma-separated (e.g., "JournalArticle,Conference")
-      zh_Hans: 按出版物类型过滤结果，逗号分隔（例如："JournalArticle,Conference"）
-      pt_BR: Filtrar resultados por tipo de publicação, separados por vírgula (ex: "JournalArticle,Conference")
+      zh_Hans: 按出版物类型过滤结果，逗号分隔（例如, "JournalArticle,Conference"）
+      pt_BR: Filtrar resultados por tipo de publicação, separados por vírgula (ex, "JournalArticle,Conference")
     llm_description: Filter papers by publication type. Values can include JournalArticle, Conference, Review, and others. Provide as comma-separated list.
     form: form
   - name: openAccessPdf
@@ -105,7 +105,7 @@ parameters:
     human_description:
       en_US: Filter by publication year (single year or range, e.g., "2020" or "2018-2022")
       zh_Hans: 按出版年份过滤（单一年份或范围，例如："2020"或"2018-2022"）
-      pt_BR: Filtrar por ano de publicação (ano único ou intervalo, ex: "2020" ou "2018-2022")
+      pt_BR: Filtrar por ano de publicação (ano único ou intervalo, ex, "2020" ou "2018-2022")
     llm_description: Filter papers by publication year. Can be a single year (e.g., "2020") or a range (e.g., "2018-2022").
     form: form
   - name: fieldsOfStudy
@@ -118,7 +118,7 @@ parameters:
     human_description:
       en_US: Filter by academic fields, comma-separated (e.g., "Computer Science,Medicine")
       zh_Hans: 按学术领域过滤，逗号分隔（例如："Computer Science,Medicine"）
-      pt_BR: Filtrar por campos acadêmicos, separados por vírgula (ex: "Computer Science,Medicine")
+      pt_BR: Filtrar por campos acadêmicos, separados por vírgula (ex, "Computer Science,Medicine")
     llm_description: Filter papers by academic discipline. Values include Computer Science, Medicine, Physics, etc. Provide as comma-separated list.
     form: form
   - name: filtered

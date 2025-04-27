@@ -23,6 +23,14 @@ class SemanticScholarProvider(ToolProvider):
                 timeout=10
             )
             response.raise_for_status()
-            
+            response.json()
+
+        except requests.exceptions.RequestException as e:
+            # 处理请求错误
+            raise ToolProviderCredentialValidationError(f"无法连接到TXYZ API: {str(e)}")
+        except ValueError as e:
+            # 处理JSON解析错误
+            raise ToolProviderCredentialValidationError(f"API返回了无效的响应: {str(e)}")
         except Exception as e:
-            raise ToolProviderCredentialValidationError(str(e))
+            # 处理其他所有错误
+            raise ToolProviderCredentialValidationError(f"验证过程中出现错误: {str(e)}")

@@ -13,7 +13,7 @@ identity:
 credentials_schema:
   api_key:
     type: secret-input
-    required: false
+    required: true
     label:
       en_US: API Key
       zh_Hans: API密钥
